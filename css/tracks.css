@@ -1,0 +1,40 @@
+table.tracks
+{
+  border-collapse: collapse;
+}
+
+table.tracks td.album-header
+{ 
+  padding-left: 10px;
+  padding-top: 7px;
+  border-bottom-style: solid; 
+  border-bottom-width: 1px; 
+}
+
+table.tracks td 
+{ 
+  padding-right: 5px;
+}
+
+table.tracks td.track 
+{ 
+  text-align: right;
+  border-right-style: solid; 
+  border-right-width: 1px; 
+}
+
+table.tracks td.track-name 
+{ 
+  padding-left: 3px; 
+}
+
+table.tracks tr.odd
+{
+  background-color: #D3D3D3;
+}
+
+.album-art
+{ 
+  width: 64px;
+  height: 64px;
+}

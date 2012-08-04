@@ -1,0 +1,17 @@
+table.playback
+{
+  border-collapse: collapse;
+  margin-top: 5px;
+}
+
+table.playback td 
+{
+  padding: 0px;
+}
+
+#playback-art img
+{ 
+  width: 64px;
+  height: 64px;
+  padding-right: 5px;
+}
