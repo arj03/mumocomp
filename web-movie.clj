@@ -1,10 +1,13 @@
 (ns web
   (:import (java.io File))
+  (:import (java.io BufferedReader InputStreamReader))
+  (:require [clojure.string :as string])
   )
 
 (def movie-footer-options
   [{:name "movies" :url "/movie/"}
    {:name "reload folders" :url "/movie/reload"}
+   {:name "controls" :url "/movie/controls"}
    {:name "audio" :url "/audio"}
    {:name "admin" :url "/admin"}
    ])
@@ -102,18 +105,75 @@
   (movie/update-last-watched path)
   (common/run-simple-command-with-output common/cmdout (vector "/bin/bash" "-c" (str (global/playback-commands (movie/extension path)) " '" path "'")))))
 
+(use 'clojure.java.io)
+
+; control mplayer
+(defn send-command [pid, cmd]
+  (with-open [wrtr (writer (str "/proc/" pid "/fd/0"))]
+	     (.write wrtr cmd)))
+
+(defn get-pid []
+  (let [o (.. Runtime getRuntime (exec "ps -C mplayer -o pid="))]
+   (let [r (BufferedReader.
+	    (InputStreamReader.
+	     (.getInputStream o)))]
+	     (string/trim (first (line-seq r))))))
+
+;(print "sending command")
+; m (forward), n (REWIND) - defined in .mplayer/input.conf
+
 (defn handle-movie-command [cmd params]
   (cond (= cmd "play-movie")
 	(play-movie (url-decode (:name params)))
+	; control mplayer
+	(= cmd "reverse")
+	(send-command (get-pid) "n")
+	(= cmd "forward")
+	(send-command (get-pid) "m")
+	(= cmd "pause")
+	(send-command (get-pid) "p")
+	(= cmd "stop")
+	(send-command (get-pid) "q")
+	(= cmd "osd")
+	(send-command (get-pid) "o")
+	(= cmd "subtitle")
+	(send-command (get-pid) "j")
 	(= cmd "reload")
-	(movie/read-files))
+	(movie/read-files)
 	(= cmd "update-internet-info")
 	(movie/update-movie (url-decode (:name params)))
+	)
   "")
+
+(defn mobile-movie-control []
+  (html5
+   [:head 
+    [:title "Playback control"]
+    (mobile-header-js)
+    (js "mobile-movie-playback")
+    (include-css "/css/mobile.css")
+    ]
+   [:body 
+    [:div {:data-role "page"}
+     (mobile-header "Playback control")
+     [:div {:data-role "content"}
+      [:center
+       [:a {:href "" :data-role "button" :data-inline "true" :id "playback-reverse"} "reverse"]
+       [:a {:href "" :data-role "button" :data-inline "true" :id "playback-toggle"} "pause"]
+       [:a {:href "" :data-role "button" :data-inline "true" :id "playback-forward"} "forward"]
+       [:br]
+       [:a {:href "" :data-role "button" :data-inline "true" :id "playback-stop"} "stop"]
+       [:a {:href "" :data-role "button" :data-inline "true" :id "playback-osd"} "OSD"]
+       [:a {:href "" :data-role "button" :data-inline "true" :id "playback-subtitle"} "subtitle"]]
+      ]
+     (mobile-movie-footer "controls")]]
+   ))
 
 (defroutes movie-routes
   (api (POST "/control" {params :params}
              (handle-movie-command (:command params) params)))
+  (GET "/controls" []
+    (mobile-movie-control))
   (GET ["/:path" :path #".*"] [path]
     (movies (url-decode path)))
   (GET "/" []

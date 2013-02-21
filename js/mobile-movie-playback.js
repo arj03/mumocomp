@@ -23,4 +23,9 @@ $(document).bind("pageinit", function(event) {
       $.post("/movie/control", {"type": "", "name": "", "command": "osd"});
       return false; 
    });
+
+   $("#playback-subtitle").bind('vclick', function() { 
+      $.post("/movie/control", {"type": "", "name": "", "command": "subtitle"});
+      return false; 
+   });
 });
