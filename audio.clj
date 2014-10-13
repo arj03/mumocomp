@@ -99,7 +99,7 @@
 	       (. file getName) e)))))
 
 (defn generate-tracks []
-  (let [tmp (filter #(not= % nil) (map create-track-from-file @files))]
+  (let [tmp (remove nil? (map create-track-from-file @files))]
     (common/ref-upd-nil tracks (zipmap (map :filename tmp) tmp))))
 
 (defn first-run []

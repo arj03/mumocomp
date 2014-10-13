@@ -56,7 +56,7 @@
 
 (defn list-folder [path]
   (let [folder (File. path)]
-    (filter #(not= nil %) (map #(create-entry (str (. folder getPath) "/" %)) (. folder list)))))
+    (remove nil? (map #(create-entry (str (. folder getPath) "/" %)) (. folder list)))))
 
 (defn generate-movies [root]
   (doseq [f (. root list)]

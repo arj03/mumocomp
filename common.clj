@@ -118,8 +118,5 @@
 (defn ieq [lhs rhs]
   (= (. lhs toLowerCase ) (. rhs toLowerCase)))
 
-(defn nil-prune [seq]
-  (filter #(not= % nil) seq))
-
 (defn simple-cmp [name]
   #(icompare (name %1) (name %2)))
