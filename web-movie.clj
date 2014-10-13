@@ -108,9 +108,10 @@
 (use 'clojure.java.io)
 
 ; control mplayer
-(defn send-command [pid, cmd]
-  (with-open [wrtr (writer (str "/proc/" pid "/fd/0"))]
-	     (.write wrtr cmd)))
+(defn send-command [pid cmd]
+  (when pid
+    (with-open [wrtr (writer (str "/proc/" pid "/fd/0"))]
+      (.write wrtr cmd))))
 
 (defn get-pid []
   (let [o (.. Runtime getRuntime (exec "ps -C mplayer -o pid="))]
@@ -122,28 +123,41 @@
 ;(print "sending command")
 ; m (forward), n (REWIND) - defined in .mplayer/input.conf
 
+(def last-command (atom { :cmd "" :lastrun (. System currentTimeMillis) :multiplier 1 }))
+
 (defn handle-movie-command [cmd params]
-  (cond (= cmd "play-movie")
-	(play-movie (url-decode (:name params)))
-	; control mplayer
-	(= cmd "reverse")
-	(send-command (get-pid) "n")
-	(= cmd "forward")
-	(send-command (get-pid) "m")
-	(= cmd "pause")
-	(send-command (get-pid) "p")
-	(= cmd "stop")
-	(send-command (get-pid) "q")
-	(= cmd "osd")
-	(send-command (get-pid) "o")
-	(= cmd "subtitle")
-	(send-command (get-pid) "j")
-	(= cmd "reload")
-	(movie/read-files)
-	(= cmd "update-internet-info")
-	(movie/update-movie (url-decode (:name params)))
-	)
-  "")
+  (let [last @last-command
+        pid (get-pid)
+        same-as-last (fn [] (and 
+                             (= (:cmd last) cmd) 
+                             (< (- (. System currentTimeMillis) (:lastrun last)) 10000)))]
+    (swap! last-command assoc 
+           :cmd cmd 
+           :lastrun (. System currentTimeMillis)
+           :multiplier (min 5 (cond (same-as-last) (inc (:multiplier last)) :else 1)))
+    (cond (= cmd "play-movie")
+          (play-movie (url-decode (:name params)))
+          ; control mplayer
+          (= cmd "reverse")
+          (dotimes [n (:multiplier @last-command)]
+            (send-command pid "n"))
+          (= cmd "forward")
+          (dotimes [n (:multiplier @last-command)]
+            (send-command pid "m"))
+          (= cmd "pause")
+          (send-command pid "p")
+          (= cmd "stop")
+          (send-command pid "q")
+          (= cmd "osd")
+          (send-command pid "o")
+          (= cmd "subtitle")
+          (send-command pid "j")
+          (= cmd "reload")
+          (movie/read-files)
+          (= cmd "update-internet-info")
+          (movie/update-movie (url-decode (:name params)))
+          )
+    ""))
 
 (defn mobile-movie-control []
   (html5
