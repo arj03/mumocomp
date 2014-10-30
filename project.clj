@@ -10,4 +10,6 @@
                  [compojure "1.1.9"]
                  [ring "1.3.1"]
                  [hiccup "1.0.5"]
-                 ])
+                 ]
+  :main startup
+  :aot [startup])
