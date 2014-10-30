@@ -4,7 +4,7 @@
 )
 
 (defn eval-file-in-repl [file]
-  (load-file (str "/home/arj/mumocomp/" file)))
+  (load-file (str "/home/arj/mumocomp/src/" file)))
 
 (defn -main [& args]
   (println "loading files")
