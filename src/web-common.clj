@@ -41,9 +41,9 @@
 (defn mobile-header-js []
   (html 
    "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">"
-   (include-css "/css/jquery.mobile-1.4.4.min.css")
-   (js "jquery-1.11.1.min")
-   (js "jquery.mobile-1.4.4.min")
+   (include-css "/css/jquery.mobile-1.4.5.min.css")
+   (js "jquery-2.1.1.min")
+   (js "jquery.mobile-1.4.5.min")
    (js "notification")
    ))
 
