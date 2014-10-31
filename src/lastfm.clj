@@ -9,7 +9,7 @@
 ; define your username and password in personal.clj
 (def user "")
 (def password "")
-(common/eval-file-in-repl "personal.clj")
+;(common/eval-file-in-repl "personal.clj")
 
 (defn get-session []
   (try

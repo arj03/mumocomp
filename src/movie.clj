@@ -48,7 +48,7 @@
 
 (defn create-entry [path]
   (let [file (File. path)
-	movie (common/find-first #(= (:path %) (. file getPath)) (vals @movies))]
+        movie (common/find-first #(= (:path %) (. file getPath)) (vals @movies))]
     (cond (not= movie nil) movie
 	  :else
 	  (when (. file isDirectory)
@@ -93,8 +93,8 @@
 (defn get-movie-info-file [file]
   (let [f (. file getName)
         fixed-f (fix-name f)
-	imdb-info (imdb/get-rating fixed-f)
-	rotten-info (rotten/get-rating fixed-f)]
+        imdb-info (imdb/get-rating fixed-f)
+        rotten-info (rotten/get-rating fixed-f)]
     ; imdb doesn't allow linking to their images directly, so we only use rotten
     {(. file getPath) (struct MovieInfo (. file getPath) (:year imdb-info) (:rating imdb-info) (:url imdb-info) (:img rotten-info) (:rating rotten-info) (:url rotten-info))}))
 

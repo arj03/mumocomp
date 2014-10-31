@@ -93,9 +93,9 @@
       [:div {:data-role "dialog" :id "dialog"}
        [:div {:data-role "header"} [:h1 "Update movie info?"]]
        [:div {:data-role "content"}
-	 [:a {:href "" :id "update-internet-info-ok" :data-rel "back" :data-role "button"} "Update"]
-	 [:a {:href "" :id "update-internet-info-cancel" :data-rel "back" :data-role "button" :data-theme "c"} "Cancel"]
-	 ]]
+        [:a {:href "" :id "update-internet-info-ok" :data-rel "back" :data-role "button"} "Update"]
+        [:a {:href "" :id "update-internet-info-cancel" :data-rel "back" :data-role "button" :data-theme "c"} "Cancel"]
+        ]]
       ]
      )))
 
@@ -116,9 +116,9 @@
 (defn get-pid []
   (let [o (.. Runtime getRuntime (exec "ps -C mplayer -o pid="))]
    (let [r (BufferedReader.
-	    (InputStreamReader.
-	     (.getInputStream o)))]
-	     (string/trim (first (line-seq r))))))
+            (InputStreamReader.
+             (.getInputStream o)))]
+     (string/trim (first (line-seq r))))))
 
 ;(print "sending command")
 ; m (forward), n (REWIND) - defined in .mplayer/input.conf

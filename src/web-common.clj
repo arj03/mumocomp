@@ -30,7 +30,7 @@
 
 (defn long-polling-scripts [name ref filter-func]
   (let [register (init-json-data ref filter-func name)
-	comet (comet-load name (str name "id"))]
+        comet (comet-load name (str name "id"))]
     (html [:script {:type "text/javascript"} register]
 	  (js (str "list-" name))
 	  [:script {:type "text/javascript"} comet])))
@@ -57,8 +57,6 @@
    [:div {:data-role "footer" :data-position "fixed" :data-theme "b"}
     [:div {:data-role "navbar"}
      [:ul
-      (map #(cond (= (:name %) option)
-                  (html [:li [:a {:href (:url %) :class "ui-btn-active" :rel "external"} (:name %)]])
-                  :else
-                  (html [:li [:a {:href (:url %) :rel "external"} (:name %)]])) options)
+      (map #(html [:li [:a {:href (:url %) :class (cond (= (:name %) option) "ui-btn-active" :else "") :rel "external"} (:name %)]])
+           options)
       ]]]))

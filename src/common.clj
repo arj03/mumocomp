@@ -66,13 +66,13 @@
 				  {:agent (:agent db-writer-pair) :val val}))
        :else
        (let [writer (agent {})]
-	 (send writer (fn [s]
+         (send writer (fn [s]
 			(do 
 			 (Thread/sleep timeout)
 			 (dosync
 			  (write-to-db name (:val (@db-writers name)))
 			  (ref-set db-writers (dissoc @db-writers name))))))
-	 (ref-set db-writers (assoc @db-writers name 
+         (ref-set db-writers (assoc @db-writers name 
 				    {:agent writer :val val})))))))
 
 ; convenience wrapper
@@ -107,7 +107,7 @@
 
 (defn upd-value [ref filter-func field new-value]
   (let [el (find-first filter-func @ref)
-	rest (filter #(not (filter-func %)) @ref)]
+        rest (filter #(not (filter-func %)) @ref)]
     (when el
       (common/ref-upd ref (cons (merge el { field new-value }) rest))))
   nil)

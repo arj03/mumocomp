@@ -20,6 +20,6 @@
   (let [url (get-url name)]
     (when url
       (let [data (screen-scraping/fetch-url url)
-	    rating (first (:content (first (select data [:strong :span]))))
-	    year (first (:content (first (select data [:h1 :span :a]))))]
-	(hash-map :url url :year (Integer. year) :rating rating :img (get-img-url data))))))
+            rating (first (:content (first (select data [:strong :span]))))
+            year (first (:content (first (select data [:h1 :span :a]))))]
+        (hash-map :url url :year (Integer. year) :rating rating :img (get-img-url data))))))

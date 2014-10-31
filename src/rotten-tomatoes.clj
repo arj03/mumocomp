@@ -21,13 +21,13 @@
 
 (defn get-url [name]
   (let [ghtml (screen-scraping/fetch-url (get-google-url name))
-	element (:content (first (select ghtml [:div :cite])))]
+        element (:content (first (select ghtml [:div :cite])))]
     (str (first element) (first (:content (second element))))))
 
 (defn get-rating [name]
   (let [url (get-url name)]
     (when (and url (not= url ""))
       (let [data (screen-scraping/fetch-url (str "http://" url))
-	    rating (first (:content (first (select data [:span#all-critics-meter]))))
-	    img (:src (:attrs (first (select data [:div.movie_poster_area :img]))))]
-	(hash-map :url (str "http://" url) :rating rating :img img)))))
+            rating (first (:content (first (select data [:span#all-critics-meter]))))
+            img (:src (:attrs (first (select data [:div.movie_poster_area :img]))))]
+        (hash-map :url (str "http://" url) :rating rating :img img)))))
