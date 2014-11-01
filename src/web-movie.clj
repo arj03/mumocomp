@@ -114,11 +114,11 @@
       (.write wrtr cmd))))
 
 (defn get-pid []
-  (let [o (.. Runtime getRuntime (exec "ps -C mplayer -o pid="))]
-   (let [r (BufferedReader.
-            (InputStreamReader.
-             (.getInputStream o)))]
-     (string/trim (first (line-seq r))))))
+  (let [o (.. Runtime getRuntime (exec "ps -C mplayer -o pid="))
+        r (-> o .getInputStream InputStreamReader. BufferedReader.)
+        f (first (line-seq r))]
+    (when f
+      (string/trim f))))
 
 ;(print "sending command")
 ; m (forward), n (REWIND) - defined in .mplayer/input.conf
