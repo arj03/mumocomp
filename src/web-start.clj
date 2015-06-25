@@ -5,7 +5,7 @@
   (route/files "/" {:root global/web-folder}))
 
 (defroutes my-routes
-  (context "/audio" [] audio-routes)
+  ;(context "/audio" [] audio-routes)
   (context "/movie" [] movie-routes)
   (context "/admin" [] admin-routes)
   (GET ["/activity/:id" :id #".*"] [id]
@@ -21,7 +21,7 @@
   (GET ["/images/:filename" :filename #".*"] [filename]
     (load-static-file))
   (GET "/" []
-    (resp/redirect "/audio"))
+    (resp/redirect "/movie"))
   (route/not-found (html [:h1 "Page not found!"])))
 
 ;(run-jetty (var my-routes) {:port 6666})

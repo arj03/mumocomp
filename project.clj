@@ -1,4 +1,4 @@
-(defproject mumocomp "0.1.0"
+(defproject mumocomp "0.1.1"
   :description "HTPC management system with a web frontend"
   :url "https://github.com/arj03/mumocomp"
   :dependencies [[org.clojure/clojure "1.6.0"]

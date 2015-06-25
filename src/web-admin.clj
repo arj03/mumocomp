@@ -2,7 +2,7 @@
 
 (def admin-footer-options
   [{:name "admin" :url "/admin/"}
-   {:name "audio" :url "/audio/"}
+   ;{:name "audio" :url "/audio/"}
    {:name "movies" :url "/movie/"}])
 
 (defn admin [path]

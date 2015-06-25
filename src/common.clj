@@ -49,7 +49,7 @@
    (catch Exception e 
      (println (format "Caught exception when reading file %s:\n%s" fname e)))))
 
-; lifo med timeout
+; lifo with timeout
 (def timeout 1000) ; ms
 
 ; maps from name to agent and val, if agent is waiting to write

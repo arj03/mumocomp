@@ -8,7 +8,7 @@
   [{:name "movies" :url "/movie/"}
    {:name "reload folders" :url "/movie/reload"}
    {:name "controls" :url "/movie/controls"}
-   {:name "audio" :url "/audio"}
+;   {:name "audio" :url "/audio"}
    {:name "admin" :url "/admin"}
    ])
 
@@ -47,7 +47,13 @@
     (link-to (conj {:data-ajax "false"} m) (str "/movie/" (url-encode (:path movie)))
              (when (:image info)
                [:img {:width 110 :src (:image info)}])
+             (when (:last-watched info)
+               "* ")
              (:name movie)
+             (when (:last-watched info)
+               (let [d (java.util.Date. (:last-watched info))
+                     watched (.format (java.text.SimpleDateFormat. "dd/MM/yyyy HH:mm:ss") d)]
+                 (str " (last watched " watched ")")))
              [:br]
              (when (:imdb-rating info)
                (imdb-info info))
@@ -101,9 +107,9 @@
 
 (defn play-movie [path]
   (when (not= path "")
-  (println (str "playing:" (str (global/playback-commands (movie/extension path)) " '" path "'")))
-  (movie/update-last-watched path)
-  (common/run-simple-command-with-output common/cmdout (vector "/bin/bash" "-c" (str (global/playback-commands (movie/extension path)) " '" path "'")))))
+    (println (str "playing:" (str (global/playback-commands (movie/extension path)) " '" path "'")))
+    (movie/update-last-watched path)
+    (common/run-simple-command-with-output common/cmdout (vector "/bin/bash" "-c" (str (global/playback-commands (movie/extension path)) " '" path "'")))))
 
 (use 'clojure.java.io)
 
