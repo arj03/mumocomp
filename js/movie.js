@@ -13,7 +13,7 @@ $(document).ready(
 	    });
 
 	var path = "";
-	$(".go").live("taphold", function() { path = $(this).prop('name'); $.mobile.changePage($("#dialog")); });
+        $(".go").on("taphold", function() { path = $(this).prop('name'); $.mobile.changePage($("#dialog")); });
 	$("#update-internet-info-ok").click(function() { 
 	    $.post("/movie/control", {"type": "", "name": path, "command": "update-internet-info"});
 	    showStatusMessage("updating movie information");
