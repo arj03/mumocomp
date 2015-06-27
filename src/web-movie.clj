@@ -6,6 +6,7 @@
 
 (def movie-footer-options
   [{:name "movies" :url "/movie/"}
+   {:name "latest" :url "/movie/latest"}
    {:name "reload folders" :url "/movie/reload"}
    {:name "controls" :url "/movie/controls"}
 ;   {:name "audio" :url "/audio"}
@@ -69,6 +70,19 @@
           (internet-movie-line-helper {:class "file"} movie info)
           :else
           (internet-movie-line-helper {:class "go" :name (url-encode (:path movie))} movie info))))
+
+(def latest-last-folder (atom ""))
+
+(defn latest-movie-line [movie]
+  (let [info (@movie/movie-infos (:path movie))
+        parent-folder (. (File. (:path movie)) getParent)]
+    (str
+     (when (not= parent-folder @latest-last-folder)
+       (reset! latest-last-folder parent-folder)
+       (html
+        [:li
+         parent-folder]))
+     (internet-movie-line-helper {:class "file"} movie info))))
 
 (defn has-info [path]
   (cond (= path "")
@@ -189,11 +203,40 @@
      (mobile-movie-footer "controls")]]
    ))
 
+(defn latest []
+  (let [movies (take 10 (sort-by :modified #(compare %2 %1) (vals @movie/movies)))]
+    (reset! latest-last-folder "")
+    (html5
+     [:head 
+      [:title "Latest movies"]
+      (mobile-header-js)
+      (js "movie")
+      ]
+     [:body
+      [:div {:data-role "page"}
+       (mobile-movie-header-with-back "Latest movies")
+       [:div {:data-role "content"}
+        [:ul {:data-role "listview" :data-inset "true"}
+         (map latest-movie-line movies)
+         ]]
+       (mobile-movie-footer "latest")
+       ]
+      [:div {:data-role "dialog" :id "dialog"}
+       [:div {:data-role "header"} [:h1 "Update movie info?"]]
+       [:div {:data-role "content"}
+        [:a {:href "" :id "update-internet-info-ok" :data-rel "back" :data-role "button"} "Update"]
+        [:a {:href "" :id "update-internet-info-cancel" :data-rel "back" :data-role "button" :data-theme "c"} "Cancel"]
+        ]]
+      ]
+     )))
+
 (defroutes movie-routes
   (api (POST "/control" {params :params}
              (handle-movie-command (:command params) params)))
   (GET "/controls" []
     (mobile-movie-control))
+  (GET "/latest" []
+    (latest))
   (GET ["/:path" :path #".*"] [path]
     (movies (url-decode path)))
   (GET "/" []
