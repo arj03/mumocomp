@@ -1,5 +1,9 @@
 (ns web
-  (:require [ring.util.response :as resp]))
+  (:use
+   [ring.middleware file-info stacktrace])
+  (:require
+   [ring.util.response :as resp]
+   ))
 
 (defn load-static-file []
   (route/files "/" {:root global/web-folder}))
@@ -24,5 +28,10 @@
     (resp/redirect "/movie"))
   (route/not-found (html [:h1 "Page not found!"])))
 
+(def handler 
+  (-> my-routes
+      wrap-file-info
+      wrap-stacktrace))
+
 ;(run-jetty (var my-routes) {:port 6666})
-(run-jetty (var my-routes) {:port 5000})
+(run-jetty #'handler {:port 5000})
