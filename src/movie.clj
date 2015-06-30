@@ -29,11 +29,20 @@
 (def movies (ref {}))
 (def movie-infos (ref {}))
 
+(defn get-access-time [path]
+  (let [attr (Files/readAttributes (-> path clojure.java.io/file .toPath) BasicFileAttributes (into-array java.nio.file.LinkOption []))]
+    (. (. attr lastAccessTime) toMillis)))
+
+(defn get-best-date-from-file [file]
+  (let [accessed (get-access-time file)
+        modified (. file lastModified)]
+    (max accessed modified)))
+
 (defn create-movie [file]
   (struct Movie
 	  (. file getPath)
-	  (. file getName)
-          (. file lastModified)))
+          (. file getName)
+          (get-best-date-from-file file)))
 
 (defn extension [path]
   (. path substring (. path lastIndexOf ".")))

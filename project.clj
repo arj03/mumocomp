@@ -1,7 +1,7 @@
 (defproject mumocomp "0.1.1"
   :description "HTPC management system with a web frontend"
   :url "https://github.com/arj03/mumocomp"
-  :dependencies [[org.clojure/clojure "1.6.0"]
+  :dependencies [[org.clojure/clojure "1.7.0"]
                  [de.u-mass/lastfm-java "0.1.2"]
                  [org/jaudiotagger "2.0.3"]
                  [org.clojure/data.json "0.2.5"]
